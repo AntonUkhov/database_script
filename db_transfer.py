@@ -202,16 +202,70 @@ try:
             #        print(ex)
             #    row = my_cursor.fetchone()
 
-            # favorite_list
-            my_cursor.execute("SELECT * FROM `favorite_list`")
+            ## favorite_list
+            #my_cursor.execute("SELECT * FROM `favorite_list`")
+            #row = my_cursor.fetchone()
+            #while row is not None:
+            #    # insert data into table postgres
+            #    uid = row[1]
+            #    contact_uid = row[2]
+            #    try:
+            #        pg_cursor.execute(
+            #            f"INSERT INTO mcams_favoritelist (uid_id, contact_uid_id) VALUES ('{uid}', '{contact_uid}')")
+            #    except Exception as ex:
+            #        print(ex)
+            #    row = my_cursor.fetchone()
+
+            # file
+            my_cursor.execute("SELECT * FROM `user_uploads`")
             row = my_cursor.fetchone()
             while row is not None:
                 # insert data into table postgres
-                uid = row[1]
-                contact_uid = row[2]
+                owner_id = row[1]
+                small_file = row[4]
+                middle_file = row[3]
+                large_file = row[2]
+                datetime = row[12]
+                size = row[10]
+                size = size / 1024
+                type = row[8]
+                if type == 'image':
+                    type = 1
+                else:
+                    type = 2
+                check_file = 1 # row[5]
+                check_profile_image = row[6]
+                if not check_profile_image:
+                    check_profile_image = False
+                hash = row[9]
+                file_link = ''
                 try:
                     pg_cursor.execute(
-                        f"INSERT INTO mcams_favoritelist (uid_id, contact_uid_id) VALUES ('{uid}', '{contact_uid}')")
+                        f"""INSERT INTO mcams_file (
+                            check_file,
+                            owner_id,
+                            small_file,
+                            middle_file,
+                            large_file,
+                            datetime,
+                            size,
+                            type,
+                            check_profile_image,
+                            hash,
+                            file_link
+                            ) VALUES (
+                            '{check_file}',
+                            '{owner_id}',
+                            '{small_file}',
+                            '{middle_file}',
+                            '{large_file}',
+                            '{datetime}',
+                            '{size}',
+                            '{type}',
+                            '{check_profile_image}',
+                            '{hash}',
+                            '{file_link}'
+                            )""")
                 except Exception as ex:
                     print(ex)
                 row = my_cursor.fetchone()
