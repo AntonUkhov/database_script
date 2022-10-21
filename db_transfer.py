@@ -216,59 +216,111 @@ try:
             #        print(ex)
             #    row = my_cursor.fetchone()
 
-            # file
-            my_cursor.execute("SELECT * FROM `user_uploads`")
-            row = my_cursor.fetchone()
-            while row is not None:
-                # insert data into table postgres
-                owner_id = row[1]
-                small_file = row[4]
-                middle_file = row[3]
-                large_file = row[2]
-                datetime = row[12]
-                size = row[10]
-                size = size / 1024
-                type = row[8]
-                if type == 'image':
-                    type = 1
-                else:
-                    type = 2
-                check_file = 1 # row[5]
-                check_profile_image = row[6]
-                if not check_profile_image:
-                    check_profile_image = False
-                hash = row[9]
-                file_link = ''
-                try:
-                    pg_cursor.execute(
-                        f"""INSERT INTO mcams_file (
-                            check_file,
-                            owner_id,
-                            small_file,
-                            middle_file,
-                            large_file,
-                            datetime,
-                            size,
-                            type,
-                            check_profile_image,
-                            hash,
-                            file_link
-                            ) VALUES (
-                            '{check_file}',
-                            '{owner_id}',
-                            '{small_file}',
-                            '{middle_file}',
-                            '{large_file}',
-                            '{datetime}',
-                            '{size}',
-                            '{type}',
-                            '{check_profile_image}',
-                            '{hash}',
-                            '{file_link}'
-                            )""")
-                except Exception as ex:
-                    print(ex)
-                row = my_cursor.fetchone()
+            ## file
+            #my_cursor.execute("SELECT * FROM `user_uploads`")
+            #row = my_cursor.fetchone()
+            #while row is not None:
+            #    # insert data into table postgres
+            #    owner_id = row[1]
+            #    small_file = row[4]
+            #    middle_file = row[3]
+            #    large_file = row[2]
+            #    datetime = row[12]
+            #    size = row[10]
+            #    size = size / 1024
+            #    type = row[8]
+            #    if type == 'image':
+            #        type = 1
+            #    else:
+            #        type = 2
+            #    check_file = 1 # row[5]
+            #    check_profile_image = row[6]
+            #    if not check_profile_image:
+            #        check_profile_image = False
+            #    hash = row[9]
+            #    file_link = ''
+            #    try:
+            #        pg_cursor.execute(
+            #            f"""INSERT INTO mcams_file (
+            #                check_file,
+            #                owner_id,
+            #                small_file,
+            #                middle_file,
+            #                large_file,
+            #                datetime,
+            #                size,
+            #                type,
+            #                check_profile_image,
+            #                hash,
+            #                file_link
+            #                ) VALUES (
+            #                '{check_file}',
+            #                '{owner_id}',
+            #                '{small_file}',
+            #                '{middle_file}',
+            #                '{large_file}',
+            #                '{datetime}',
+            #                '{size}',
+            #                '{type}',
+            #                '{check_profile_image}',
+            #                '{hash}',
+            #                '{file_link}'
+            #                )""")
+            #    except Exception as ex:
+            #        print(ex)
+            #    row = my_cursor.fetchone()
+
+            ## messages
+            #my_cursor.execute("SELECT * FROM `messages`")
+            #row = my_cursor.fetchone()
+            #while row is not None:
+            #    # insert data into table postgres
+            #    from_user_id = row[1]
+            #    to_user_id = row[2]
+            #    message = row[3]
+            #    message = message.replace("'", "''")
+            #    uploads_id_id = row[4]
+            #    if not uploads_id_id:
+            #        uploads_id_id = 'NULL'
+            #    sent = row[5]
+            #    read = row[6]
+            #    #if not read:
+            #    #    read = False
+            #    date_time = row[8]
+            #    link = row[10]
+            #    spam = row[11]
+            #    chat = row[7]
+            #    support = False
+            #    try:
+            #        pg_cursor.execute(
+            #            f"""INSERT INTO mcams_messages (
+            #                        message,
+            #                        to_user_id,
+            #                        from_user_id,
+            #                        uploads_id_id,
+            #                        sent,
+            #                        read,
+            #                        date_time,
+            #                        link,
+            #                        spam,
+            #                        chat,
+            #                        support
+            #                        ) VALUES (
+            #                        '{message}',
+            #                        '{to_user_id}',
+            #                        '{from_user_id}',
+            #                        {uploads_id_id},
+            #                        '{sent}',
+            #                        '{read}',
+            #                        '{date_time}',
+            #                        '{link}',
+            #                        '{spam}',
+            #                        '{chat}',
+            #                        '{support}'
+            #                        )""")
+            #    except Exception as ex:
+            #        print(ex)
+            #    row = my_cursor.fetchone()
 
     finally:
         if mysql_conn:
