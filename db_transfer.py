@@ -189,15 +189,29 @@ try:
             #            )""")
             #    row = my_cursor.fetchone()
 
-            # black_list
-            my_cursor.execute("SELECT * FROM `black_list`")
+            ## black_list
+            #my_cursor.execute("SELECT * FROM `black_list`")
+            #row = my_cursor.fetchone()
+            #while row is not None:
+            #    # insert data into table postgres
+            #    uid = row[1]
+            #    contact_uid = row[2]
+            #    try:
+            #        pg_cursor.execute(f"INSERT INTO mcams_blacklist (uid_id, contact_uid_id) VALUES ('{uid}', '{contact_uid}')")
+            #    except Exception as ex:
+            #        print(ex)
+            #    row = my_cursor.fetchone()
+
+            # favorite_list
+            my_cursor.execute("SELECT * FROM `favorite_list`")
             row = my_cursor.fetchone()
             while row is not None:
                 # insert data into table postgres
                 uid = row[1]
                 contact_uid = row[2]
                 try:
-                    pg_cursor.execute(f"INSERT INTO mcams_blacklist (uid_id, contact_uid_id) VALUES ('{uid}', '{contact_uid}')")
+                    pg_cursor.execute(
+                        f"INSERT INTO mcams_favoritelist (uid_id, contact_uid_id) VALUES ('{uid}', '{contact_uid}')")
                 except Exception as ex:
                     print(ex)
                 row = my_cursor.fetchone()
