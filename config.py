@@ -26,3 +26,5 @@ banned_hash_fraud = 'badhash'
 bene_roles = 'bene_roles'
 users_deleted = "users_deleted"
 banned_uid = "banned_uid"
+bad_devices = "done"
+bad_fingerprint = 'done'

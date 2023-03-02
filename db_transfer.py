@@ -1,6 +1,7 @@
 import pymysql
 import psycopg2
 from config import MYSQL_HOST, MYSQL_NAME, MYSQL_PASS, MYSQL_USER, PG_HOST, PG_PASS, PG_NAME, PG_USER
+import datetime
 
 try:
     # connect to MySQL
@@ -46,7 +47,7 @@ try:
                 value = row[1]
                 pg_cursor.execute(f"INSERT INTO mcams_badfraudwords (bad_fraud_words) VALUES ('{value}')")
                 row = my_cursor.fetchone()
-            #
+            
             # bad_spam
             my_cursor.execute("SELECT * FROM `bad_spam`")
             row = my_cursor.fetchone()
@@ -55,7 +56,7 @@ try:
                 value = row[1]
                 pg_cursor.execute(f"INSERT INTO mcams_badspam (bad_spam) VALUES ('{value}')")
                 row = my_cursor.fetchone()
-            #
+            
             # bad_words
             my_cursor.execute("SELECT * FROM `bad_words`")
             row = my_cursor.fetchone()
@@ -131,6 +132,9 @@ try:
                 bad_words = False
                 spam_score = 0
                 deletion_status = False
+                reason_for_deletion_type = 0
+                bot = False
+                screen_notifications = False
                 pg_cursor.execute(
                     f"""INSERT INTO mcams_user (
                         uid,
@@ -158,7 +162,10 @@ try:
                         receive_messages,
                         bad_words,
                         spam_score,
-                        deletion_status
+                        deletion_status,
+                        reason_for_deletion_type,
+                        bot,
+                        screen_notifications
                         ) VALUES (
                         '{uid}',
                         '{username}',
@@ -185,7 +192,10 @@ try:
                         '{receive_messages}',
                         '{bad_words}',
                         '{spam_score}',
-                        '{deletion_status}'
+                        '{deletion_status}',
+                        '{reason_for_deletion_type}',
+                        '{bot}',
+                        '{screen_notifications}'
                         )""")
                 row = my_cursor.fetchone()
 
@@ -237,7 +247,7 @@ try:
                 check_file = 1  # row[5]
                 check_profile_image = row[6]
                 if not check_profile_image:
-                    check_profile_image = False
+                    check_profile_image = 1
                 hash = row[9]
                 file_link = ''
                 try:
@@ -443,13 +453,19 @@ try:
             row = my_cursor.fetchone()
             while row is not None:
                 # insert data into table postgres
-                hash = row[1]
+                bad_hash = row[1]
+                uid = row[2]
+                date_time = row[3]
                 try:
                     pg_cursor.execute(
                         f"""INSERT INTO mcams_badhash (
-                                    hash
+                                    bad_hash,
+                                    uid,
+                                    date_time
                                     ) VALUES (
-                                    '{hash}'
+                                    '{bad_hash}',
+                                    '{uid}',
+                                    '{date_time}'
                                     )""")
                 except Exception as ex:
                     print(ex)
@@ -461,12 +477,18 @@ try:
             while row is not None:
                 # insert data into table postgres
                 hash = row[1]
+                date_time = datetime.datetime.now()
+                uid = ''
                 try:
                     pg_cursor.execute(
                         f"""INSERT INTO mcams_badhash (
-                                            hash
+                                            bad_hash,
+                                            date_time,
+                                            uid
                                             ) VALUES (
-                                            '{hash}'
+                                            '{hash}',
+                                            '{date_time}',
+                                            '{uid}'
                                             )""")
                 except Exception as ex:
                     print(ex)
@@ -588,6 +610,129 @@ try:
                     else:
                         pg_cursor.execute(
                             f"""UPDATE mcams_baduser SET call = {call}, message = {message}, download = {download}, change_name = {change_name} WHERE id = '{pg_row[-11]}'""")
+                except Exception as ex:
+                    print(ex)
+                row = my_cursor.fetchone()
+
+
+            my_cursor.execute("SELECT * FROM `bad_devices`")
+            row = my_cursor.fetchone()
+            while row is not None:
+                # insert data into table postgres
+                bad_device = row[1]
+                try:
+                    pg_cursor.execute(
+                        f"""INSERT INTO mcams_baddevice (
+                                    bad_device
+                                    ) VALUES (
+                                    '{bad_device}'
+                                    )""")
+                except Exception as ex:
+                    print(ex)
+                row = my_cursor.fetchone()
+
+            
+            my_cursor.execute("SELECT * FROM `bad_fingerprint`")
+            row = my_cursor.fetchone()
+            while row is not None:
+                # insert data into table postgres
+                bad_fingerprint = row[1]
+                try:
+                    pg_cursor.execute(
+                        f"""INSERT INTO mcams_badfingerprint (
+                                    bad_fingerprint
+                                    ) VALUES (
+                                    '{bad_fingerprint}'
+                                    )""")
+                except Exception as ex:
+                    print(ex)
+                row = my_cursor.fetchone()
+
+
+            my_cursor.execute("SELECT * FROM `contact_support`")
+            row = my_cursor.fetchone()
+            while row is not None:
+                # insert data into table postgres
+                if int(row[2]) == 0:
+                    from_user = row[1]
+                    to_user = 'support_uid'
+                    support_name = row[3]
+                else:
+                    from_user = 'support_uid'
+                    to_user = row[1]
+                    support_name = row[1]
+                message = row[4]
+                uploads_id = row[5]
+                read = row[8]
+                date_time = row[6]
+                sent = row[7]
+                link = 0
+                spam = 0
+                chat = True
+                support = True
+                try:
+                    pg_cursor.execute(
+                        f"""INSERT INTO mcams_messages (
+                                    from_user_id,
+                                    to_user_id,
+                                    support_name,
+                                    message,
+                                    uploads_id_id,
+                                    read,
+                                    date_time,
+                                    sent,
+                                    link,
+                                    spam,
+                                    chat,
+                                    support
+                                    ) VALUES (
+                                    '{from_user}',
+                                    '{to_user}',
+                                    '{support_name}',
+                                    '{message}',
+                                    '{uploads_id}',
+                                    '{read}',
+                                    '{date_time}',
+                                    '{sent}',
+                                    '{link}',
+                                    '{spam}',
+                                    '{chat}',
+                                    '{support}'
+                                    )""")
+                except Exception as ex:
+                    print(ex)
+                row = my_cursor.fetchone()
+
+
+            my_cursor.execute("SELECT * FROM `contact_tickets`")
+            row = my_cursor.fetchone()
+            while row is not None:
+                # insert data into table postgres
+                uid = 'support_uid'
+                contact_uid = row[1]
+                msg_id = row[3]
+                if int(row[5]) == 1:
+                    ticket = True
+                else:
+                    ticket = False
+                last_msg = row[2]
+                if row[4] is not None:
+                    last_msg = '📎'
+                try:
+                    pg_cursor.execute(
+                        f"""INSERT INTO mcams_contacts (
+                                    uid_id,
+                                    contact_uid_id,
+                                    msg_id_id,
+                                    last_msg,
+                                    ticket
+                                    ) VALUES (
+                                    '{uid}',
+                                    '{contact_uid}',
+                                    '{msg_id}',
+                                    '{last_msg}',
+                                    '{ticket}'
+                                    )""")
                 except Exception as ex:
                     print(ex)
                 row = my_cursor.fetchone()
